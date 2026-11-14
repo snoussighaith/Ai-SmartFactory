@@ -1,0 +1,33 @@
+PWD c:\Users\ghait\Desktop\Projet Python\report
+INPUT C:\Users\ghait\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT c:\Users\ghait\Desktop\Projet Python\report\main.tex
+OUTPUT main.log
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\size12.clo
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\size12.clo
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\size12.clo
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\inputenc.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\inputenc.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\fontenc.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\base\fontenc.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm1200.tfm
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\lm\lmodern.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\lm\lmodern.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\babel.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\babel.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\txtbabel.def
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\arabi\bblopts.cfg
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\arabi\bblopts.cfg
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\arabi\bblopts.cfg
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\locale\fr\babel-french.tex
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\locale\fr\babel-french.tex
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\locale\fr\babel-french.tex
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel\locale\fr\babel-fr.ini
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel-french\french.ldf
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel-french\french.ldf
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel-french\french.ldf
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\generic\babel-french\french3.ldf
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\carlisle\scalefnt.sty
+INPUT C:\Users\ghait\AppData\Local\Programs\MiKTeX\tex\latex\carlisle\scalefnt.sty

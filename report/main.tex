@@ -1,0 +1,406 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+% Zones à compléter (en rouge)
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[À COMPLÉTER : #1]}}}
+\newcommand{\tc}{\textcolor{red}{\textbf{[À COMPLÉTER]}}}
+
+% En-tête / pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{SmartFactory AI}
+\rhead{Master 2 Data Science}
+\cfoot{\thepage}
+
+\begin{document}
+
+% ---------- Page de titre ----------
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\large Master 2 Data Science\par}
+{\large Matière : Analyse Python\par}
+\vspace{2.5cm}
+{\Huge\bfseries SmartFactory AI\par}
+\vspace{0.6cm}
+{\Large Système intelligent de détection d'anomalies\\
+et de prédiction des pannes industrielles\par}
+\vspace{3cm}
+\begin{tabular}{rl}
+\textbf{Réalisé par :} & \todo{nom et prénom} \\
+\textbf{Encadrant :} & \todo{nom de l'enseignant} \\
+\textbf{Année universitaire :} & 2026--2027 \\
+\end{tabular}
+\vfill
+{\large \today\par}
+\end{titlepage}
+
+% ---------- Résumé ----------
+\begin{abstract}
+Ce projet porte sur la maintenance prédictive dans le contexte de l'Industrie~4.0. À partir du jeu de données AI4I~2020 (10\,000 observations de machines industrielles), nous construisons un pipeline complet de Machine Learning : prétraitement, analyse exploratoire, réduction de dimension par PCA, regroupement par K-Means, puis classification supervisée avec six algorithmes (régression logistique, KNN, SVM, arbre de décision, Random Forest et Gradient Boosting). Les modèles sont comparés avec les variables originales et avec les composantes principales, à l'aide de métriques adaptées au déséquilibre des classes (Recall, F1-score, PR-AUC). Le meilleur modèle atteint \todo{meilleur modèle, Recall et F1 sur le test}. Les résultats montrent que \todo{conclusion principale en une phrase}.
+
+\medskip
+\textbf{Mots-clés :} maintenance prédictive, détection d'anomalies, PCA, K-Means, classification, déséquilibre de classes, Random Forest.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% =====================================================
+\section{Introduction}
+
+\subsection{Contexte}
+Dans l'Industrie~4.0, les machines sont équipées de capteurs qui mesurent en continu des grandeurs physiques (température, vitesse de rotation, couple, usure, etc.). Ces données permettent de détecter des comportements anormaux et d'anticiper les défaillances, afin de réduire les arrêts imprévus et d'optimiser la maintenance. Une panne non anticipée coûte généralement plus cher qu'une intervention préventive, d'où l'intérêt des approches prédictives.
+
+\subsection{Problématique}
+Comment exploiter les données issues des capteurs industriels pour détecter automatiquement les comportements anormaux, prédire les défaillances des machines et identifier les facteurs les plus associés aux pannes ?
+
+\subsection{Objectifs}
+L'objectif général est de développer un prototype de système de maintenance prédictive. Les objectifs spécifiques sont les suivants :
+\begin{itemize}[noitemsep]
+  \item préparer et explorer les données des capteurs ;
+  \item réduire la dimensionnalité avec la PCA et visualiser les observations ;
+  \item identifier des groupes de comportements avec K-Means et rechercher des machines atypiques ;
+  \item comparer plusieurs algorithmes de classification, avec et sans PCA ;
+  \item identifier les variables les plus influentes ;
+  \item proposer une application interactive avec Streamlit.
+\end{itemize}
+
+\subsection{Organisation du rapport}
+La section~\ref{sec:donnees} présente les données. La section~\ref{sec:methodo} décrit la méthodologie. La section~\ref{sec:resultats} expose les résultats, discutés en section~\ref{sec:discussion}. La section~\ref{sec:app} présente l'application, la section~\ref{sec:limites} les limites et perspectives, puis vient la conclusion.
+
+% =====================================================
+\section{Présentation des données}\label{sec:donnees}
+
+\subsection{Source}
+Le jeu de données utilisé est \emph{AI4I 2020 Predictive Maintenance}, publié par Matzka (2020) et disponible sur le dépôt UCI Machine Learning Repository. Il contient 10\,000 observations et 14 variables. Il s'agit de \textbf{données synthétiques} qui reproduisent le comportement d'une machine de fabrication, et non de mesures issues d'une usine réelle.
+
+\subsection{Description des variables}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Variable} & \textbf{Type} & \textbf{Description} \\
+\midrule
+UDI & Identifiant & Numéro de ligne (1 à 10\,000) \\
+Product ID & Identifiant & Référence du produit \\
+Type & Catégorielle & Qualité du produit : L (faible, $\approx$60\,\%), M (moyenne, $\approx$30\,\%), H (haute, $\approx$10\,\%) \\
+Air temperature [K] & Numérique & Température de l'air ambiant \\
+Process temperature [K] & Numérique & Température du processus \\
+Rotational speed [rpm] & Numérique & Vitesse de rotation \\
+Torque [Nm] & Numérique & Couple \\
+Tool wear [min] & Numérique & Usure de l'outil \\
+Machine failure & Binaire (cible) & 1 si la machine est en panne \\
+TWF, HDF, PWF, OSF, RNF & Binaires & Modes de panne : usure de l'outil, dissipation thermique, puissance, surcharge, panne aléatoire \\
+\bottomrule
+\end{tabularx}
+\caption{Variables du jeu de données AI4I 2020.}
+\end{table}
+
+\subsection{Déséquilibre des classes}
+La classe « panne » est minoritaire : environ 3,4\,\% des observations (\todo{nombre exact de pannes et de machines normales}). Ce déséquilibre a des conséquences majeures sur le choix des métriques et des méthodes, détaillées en section~\ref{sec:methodo}.
+
+\subsection{Écart avec l'énoncé}
+L'énoncé mentionne des capteurs de vibration, de pression, de tension et de courant. Le jeu de données ne contient que la température, la vitesse de rotation, le couple et l'usure. L'étude porte donc sur ces variables.
+
+% =====================================================
+\section{Méthodologie}\label{sec:methodo}
+
+Le pipeline suit l'ordre : données brutes, prétraitement, exploration, réduction de dimension, apprentissage non supervisé, classification, évaluation, interprétation, application. Tout le code est réalisé en Python (Pandas, NumPy, Scikit-learn, Matplotlib, Seaborn) dans des notebooks Jupyter.
+
+\subsection{Prétraitement}
+
+\paragraph{Qualité des données.} Nous avons vérifié l'absence de valeurs manquantes et de doublons (\todo{résultat de la vérification}).
+
+\paragraph{Valeurs aberrantes.} Elles ont été détectées avec la règle de l'IQR (valeurs situées au-delà de $Q_1 - 1{,}5\times \mathrm{IQR}$ ou de $Q_3 + 1{,}5\times \mathrm{IQR}$). Les boxplots montrent que les températures et l'usure de l'outil ne présentent pas d'outliers, alors que la vitesse de rotation présente une asymétrie à droite avec de nombreuses valeurs élevées, et que le couple présente des valeurs extrêmes des deux côtés. Nous avons \textbf{conservé} ces valeurs, car en maintenance prédictive les conditions extrêmes sont souvent celles qui précèdent une défaillance. \todo{taux de pannes parmi les lignes avec outliers vs les autres, issu du notebook 01}
+
+\paragraph{Fuite de données (\emph{data leakage}).} Les colonnes TWF, HDF, PWF, OSF et RNF sont les causes directes de la panne : \texttt{Machine failure} vaut 1 dès qu'une d'elles vaut 1. Les utiliser comme variables explicatives donnerait des performances artificielles proches de 100\,\%. Elles ont donc été exclues des variables d'entrée. Les identifiants UDI et Product ID, sans valeur prédictive, ont aussi été retirés.
+
+\paragraph{Encodage.} La variable \texttt{Type} a été encodée de manière ordinale (L\,=\,0, M\,=\,1, H\,=\,2), qui correspond à l'ordre naturel de qualité.
+
+\paragraph{Séparation et normalisation.} Les données sont séparées en 80\,\% d'apprentissage et 20\,\% de test, avec une \textbf{stratification} sur la cible pour conserver la même proportion de pannes dans les deux ensembles. La normalisation (\texttt{StandardScaler} : moyenne 0, écart-type 1) est ajustée \textbf{uniquement sur l'ensemble d'apprentissage}, puis appliquée au test, pour éviter toute fuite d'information. Elle est indispensable pour la PCA, K-Means, KNN et SVM, qui reposent sur des distances et sont sensibles aux échelles (la vitesse, $\approx$1\,500, écraserait la température, $\approx$300).
+
+\subsection{Feature engineering}
+Trois variables ont été construites à partir de la physique du système :
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
+\toprule
+\textbf{Variable} & \textbf{Formule} & \textbf{Lien avec les pannes} \\
+\midrule
+\texttt{Temp\_diff} & Température du processus $-$ température de l'air & Dissipation thermique (HDF) \\
+\texttt{Power} & Couple $\times$ vitesse angulaire ($2\pi \times \text{rpm}/60$), en watts & Puissance (PWF) \\
+\texttt{Torque\_x\_Wear} & Couple $\times$ usure de l'outil & Surcharge (OSF) \\
+\bottomrule
+\end{tabularx}
+\caption{Variables construites par feature engineering.}
+\end{table}
+
+\subsection{Analyse exploratoire}
+L'analyse comprend les statistiques descriptives, les distributions des variables selon l'état de la machine, les boxplots par classe, le taux de pannes par type de produit, la matrice de corrélation et la distribution des variables par mode de panne. Les résultats sont présentés en section~\ref{sec:eda}.
+
+\subsection{Réduction de dimension : PCA}
+La PCA (\emph{Principal Component Analysis}) transforme les variables corrélées en composantes principales orthogonales, classées par variance expliquée décroissante. Elle est ajustée sur l'ensemble d'apprentissage. Le nombre de composantes retenues est choisi pour conserver 95\,\% de la variance, à l'aide du scree plot et de la variance cumulée. Les loadings et le cercle des corrélations servent à interpréter les composantes, et la projection 2D (et 3D) à visualiser les observations.
+
+\subsection{Apprentissage non supervisé : K-Means}
+K-Means partitionne les observations en $k$ groupes en minimisant la somme des carrés des distances aux centroïdes (inertie) :
+\[
+J = \sum_{j=1}^{k} \sum_{x_i \in C_j} \lVert x_i - \mu_j \rVert^2 .
+\]
+Le nombre de clusters $k$ est choisi avec la méthode du coude et le score de silhouette (\texttt{n\_init}\,=\,10, \texttt{random\_state}\,=\,42). Chaque cluster est décrit par son profil moyen sur les variables normalisées. Le \textbf{taux de pannes par cluster} permet de repérer un éventuel groupe à risque, bien que la cible n'ait pas été utilisée. Enfin, la \textbf{distance au centroïde} sert de score d'anomalie : le seuil est fixé sur l'apprentissage (percentiles 90, 95, 97, 99) puis appliqué au test, et l'on évalue la precision et le recall de ce détecteur.
+
+\subsection{Classification supervisée}
+Six algorithmes sont comparés :
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
+\toprule
+\textbf{Algorithme} & \textbf{Principe} & \textbf{Gestion du déséquilibre} \\
+\midrule
+Régression logistique & Probabilité par une fonction linéaire (baseline) & \texttt{class\_weight=balanced} \\
+KNN ($k=7$) & Vote des $k$ voisins les plus proches & Pondération par la distance \\
+SVM (noyau RBF) & Frontière à marge maximale & \texttt{class\_weight=balanced} \\
+Arbre de décision (profondeur 6) & Règles successives sur les variables & \texttt{class\_weight=balanced} \\
+Random Forest (300 arbres) & Vote d'arbres décorrélés & \texttt{class\_weight=balanced} \\
+Gradient Boosting (Hist) & Arbres successifs corrigeant les erreurs & \texttt{class\_weight=balanced} \\
+\bottomrule
+\end{tabularx}
+\caption{Algorithmes de classification comparés.}
+\end{table}
+
+Chaque modèle est évalué de deux façons : par \textbf{validation croisée stratifiée à 5 plis} sur l'apprentissage, puis par un entraînement complet suivi d'une évaluation sur le \textbf{test} jamais vu. Chacun est entraîné avec les variables originales (9 variables) et avec les composantes principales.
+
+\subsection{Métriques d'évaluation}
+Tout part de la matrice de confusion (VP, FP, FN, VN), la classe « panne » étant la classe positive.
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Accuracy} $= \dfrac{VP + VN}{VP + VN + FP + FN}$. Trompeuse ici : un modèle qui prédit toujours « pas de panne » obtient environ 96,6\,\%.
+  \item \textbf{Precision} $= \dfrac{VP}{VP + FP}$ : part des alertes qui sont justifiées.
+  \item \textbf{Recall} $= \dfrac{VP}{VP + FN}$ : part des vraies pannes détectées. C'est la métrique la plus critique en maintenance, car une panne ratée coûte plus cher qu'une fausse alerte.
+  \item \textbf{F1-score} $= \dfrac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision} + \text{Recall}}$.
+  \item \textbf{ROC-AUC} : capacité à classer une machine en panne au-dessus d'une machine saine, tous seuils confondus.
+  \item \textbf{PR-AUC} : plus informative que la ROC-AUC lorsque la classe positive est rare.
+\end{itemize}
+Les métriques principales retenues sont le Recall, le F1-score et la PR-AUC.
+
+\subsection{Optimisation et seuil de décision}
+Les hyperparamètres du Random Forest sont optimisés par recherche aléatoire (20 combinaisons, validation croisée stratifiée à 5 plis, critère : PR-AUC). Le seuil de décision, par défaut à 0,5, est ensuite ajusté pour maximiser le F1-score à partir de prédictions hors-échantillon obtenues par validation croisée sur l'apprentissage. Le test n'est donc jamais utilisé pour choisir le seuil.
+
+\subsection{Interprétation}
+L'importance des variables est extraite du Random Forest (importance par impureté) et peut être complétée par l'importance par permutation et par les valeurs SHAP. \todo{méthode(s) réellement utilisée(s)}
+
+% =====================================================
+\section{Résultats}\label{sec:resultats}
+
+\subsection{Analyse exploratoire}\label{sec:eda}
+\todo{décrire ce que montrent les graphiques du notebook 01 : variables dont les distributions diffèrent le plus entre machines en panne et machines normales (probablement \texttt{Torque}, \texttt{Tool\_wear}, \texttt{Power}) ; taux de pannes par type L/M/H ; corrélations fortes entre \texttt{Air\_temperature} et \texttt{Process\_temperature}, et entre \texttt{Power} et \texttt{Torque} ; corrélation de chaque variable avec \texttt{Machine failure}}
+
+% Exemple d'insertion de figure :
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figures/boxplots.png}
+%   \caption{Boxplots des variables capteurs.}
+% \end{figure}
+
+\subsection{PCA}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Composante} & \textbf{Variance expliquée (\%)} & \textbf{Variance cumulée (\%)} \\
+\midrule
+PC1 & \tc & \tc \\
+PC2 & \tc & \tc \\
+PC3 & \tc & \tc \\
+\dots & \dots & \dots \\
+\bottomrule
+\end{tabular}
+\caption{Variance expliquée par les composantes principales.}
+\end{table}
+
+Nombre de composantes retenues pour 95\,\% de variance : \tc.
+
+\todo{interprétation des loadings (axe thermique, axe mécanique, etc.) et de la projection 2D. Les pannes sont-elles séparables dans le plan PC1/PC2 ? Si elles sont mélangées aux machines normales, l'expliquer par le caractère non linéaire des conditions de panne, que la PCA, méthode linéaire, ne capture pas}
+
+\subsection{K-Means}
+Nombre de clusters retenu : $k = $ \tc, avec un score de silhouette de \tc. Justification du choix : \todo{coude et silhouette}.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}ccccl@{}}
+\toprule
+\textbf{Cluster} & \textbf{Nb machines} & \textbf{Nb pannes} & \textbf{Taux de pannes (\%)} & \textbf{Profil} \\
+\midrule
+0 & \tc & \tc & \tc & \tc \\
+1 & \tc & \tc & \tc & \tc \\
+\dots & \dots & \dots & \dots & \dots \\
+\bottomrule
+\end{tabular}
+\caption{Clusters K-Means et taux de pannes.}
+\end{table}
+
+\todo{un cluster concentre-t-il les pannes ? Comparer son taux au taux global de 3,4\,\%}
+
+Détection d'anomalies par distance au centroïde :
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\textbf{Percentile} & \textbf{Machines signalées} & \textbf{Pannes détectées} & \textbf{Precision (\%)} & \textbf{Recall (\%)} \\
+\midrule
+90 & \tc & \tc & \tc & \tc \\
+95 & \tc & \tc & \tc & \tc \\
+99 & \tc & \tc & \tc & \tc \\
+\bottomrule
+\end{tabular}
+\caption{Performance du détecteur d'anomalies par distance au centroïde (test).}
+\end{table}
+
+\todo{ce détecteur fait-il mieux que le hasard (taux de base de 3,4\,\%) ?}
+
+\subsection{Classification : variables originales}
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Modèle} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} & \textbf{PR-AUC} & \textbf{F1 (CV)} \\
+\midrule
+Régression logistique & \tc & \tc & \tc & \tc & \tc & \tc & \tc \\
+KNN & & & & & & & \\
+SVM & & & & & & & \\
+Arbre de décision & & & & & & & \\
+Random Forest & & & & & & & \\
+Gradient Boosting & & & & & & & \\
+\bottomrule
+\end{tabular}
+\caption{Performances sur le test, variables originales.}
+\end{table}
+
+\todo{copier le tableau du notebook 04 (section 4). Commenter : meilleur modèle, écart entre validation croisée et test (sur-apprentissage de l'arbre de décision ?), matrices de confusion, courbes ROC et Precision-Recall}
+
+\subsection{Classification : composantes PCA}
+\todo{même tableau avec les composantes principales}
+
+\subsection{Comparaison variables originales et PCA}
+\todo{pour chaque modèle, la PCA améliore-t-elle ou dégrade-t-elle le F1 et le Recall ? Éléments d'explication à discuter : le nombre de variables est déjà faible, la PCA mélange les variables et fait perdre des seuils précis sur \texttt{Torque} ou \texttt{Tool\_wear}, la PCA est linéaire alors que les règles de panne sont des seuils sur des combinaisons de variables}
+
+\subsection{Optimisation et seuil de décision}
+Meilleurs hyperparamètres du Random Forest : \tc. PR-AUC en validation croisée : \tc.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Métrique (test)} & \textbf{Seuil 0,5} & \textbf{Seuil ajusté (\tc)} \\
+\midrule
+Precision & \tc & \tc \\
+Recall & \tc & \tc \\
+F1 & \tc & \tc \\
+\bottomrule
+\end{tabular}
+\caption{Effet de l'ajustement du seuil de décision.}
+\end{table}
+
+\todo{interpréter le compromis precision/recall et ses conséquences opérationnelles (fausses alertes contre pannes ratées)}
+
+\subsection{Importance des variables}
+\todo{graphique d'importance du Random Forest. Vérifier la cohérence physique : par exemple \texttt{Torque}, \texttt{Tool\_wear}, \texttt{Power} et \texttt{Rotational\_speed} en tête}
+
+% =====================================================
+\section{Discussion}\label{sec:discussion}
+
+\paragraph{Apport des variables construites.} Les variables \texttt{Temp\_diff}, \texttt{Power} et \texttt{Torque\_x\_Wear} traduisent les règles physiques qui génèrent les pannes. \todo{leur rang dans l'importance des variables}
+
+\paragraph{Modèles à arbres.} Les pannes de ce jeu de données sont définies par des seuils sur des variables ou leurs combinaisons, ce qui favorise les modèles à base d'arbres (Random Forest, Gradient Boosting). \todo{confirmer ou nuancer avec vos résultats}
+
+\paragraph{Rôle de la PCA et de K-Means.} Ce sont avant tout des outils d'exploration et de visualisation. \todo{conclusions tirées de vos résultats}
+
+\paragraph{Compromis precision/recall.} En maintenance, le coût d'une panne imprévue dépasse généralement celui d'une inspection inutile : on privilégie donc un recall élevé, quitte à accepter davantage de fausses alertes.
+
+% =====================================================
+\section{Application interactive}\label{sec:app}
+Une application Streamlit est prévue pour charger les données d'une machine, visualiser les paramètres des capteurs, afficher les clusters K-Means et la projection PCA, choisir un modèle, obtenir une prédiction avec sa probabilité de panne, et consulter les métriques. Elle charge les modèles sauvegardés avec \texttt{joblib} (scaler, PCA, K-Means, modèles de classification). \todo{captures d'écran et description une fois l'application réalisée}
+
+% =====================================================
+\section{Limites et perspectives}\label{sec:limites}
+
+\subsection{Limites}
+\begin{itemize}[noitemsep]
+  \item Les données sont synthétiques : les performances ne se transposent pas directement à une usine réelle.
+  \item Aucune dimension temporelle : chaque ligne est traitée indépendamment, sans historique de la machine.
+  \item Peu de variables, et absence de capteurs de vibration, de pression, de tension et de courant.
+  \item Nombre limité de pannes (environ 340), ce qui rend les estimations de recall sensibles à l'échantillonnage.
+\end{itemize}
+
+\subsection{Perspectives}
+\begin{itemize}[noitemsep]
+  \item Tester SMOTE ou d'autres techniques de rééchantillonnage, ainsi que XGBoost ou LightGBM.
+  \item Classification multi-classes des modes de panne (TWF, HDF, PWF, OSF).
+  \item Valeurs SHAP pour une interprétation locale de chaque prédiction.
+  \item Validation sur des données réelles de capteurs, avec une dimension temporelle (séries temporelles, prédiction de la durée de vie restante).
+  \item Déploiement avec surveillance en temps réel.
+\end{itemize}
+
+% =====================================================
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+Ce projet a mis en œuvre une chaîne complète de maintenance prédictive : préparation rigoureuse des données (exclusion des variables à fuite, split stratifié, normalisation sur l'apprentissage), exploration par PCA et K-Means, puis comparaison de six algorithmes avec des métriques adaptées au déséquilibre des classes. \todo{trois à cinq phrases de bilan : meilleur modèle et ses performances, effet de la PCA, facteurs les plus associés aux pannes, apport de l'application}
+
+% =====================================================
+\begin{thebibliography}{9}
+\bibitem{matzka2020} Matzka, S. (2020). \emph{Explainable Artificial Intelligence for Predictive Maintenance Applications}. Third International Conference on Artificial Intelligence for Industries (AI4I 2020).
+\bibitem{uci} UCI Machine Learning Repository : \emph{AI4I 2020 Predictive Maintenance Dataset}.
+\bibitem{sklearn} Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. \emph{Journal of Machine Learning Research}, 12, 2825--2830.
+\bibitem{streamlit} Documentation de Streamlit : \url{https://docs.streamlit.io}
+\end{thebibliography}
+
+\appendix
+\section{Structure du projet}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+\textbf{Fichier} & \textbf{Contenu} \\
+\midrule
+\texttt{01\_pretraitement\_eda.ipynb} & Prétraitement, feature engineering, analyse exploratoire \\
+\texttt{02\_pca.ipynb} & PCA, variance expliquée, projections \\
+\texttt{03\_kmeans.ipynb} & K-Means, clusters, détection d'anomalies \\
+\texttt{04\_classification.ipynb} & Six modèles, comparaison avec et sans PCA, seuil \\
+\texttt{app.py} & Application Streamlit \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}
