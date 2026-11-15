@@ -7,7 +7,15 @@ Lancer depuis le dossier du projet :
 Prérequis : avoir exécuté les notebooks 01 à 04 (fichiers dans data/ et models/).
 """
 import warnings
+import sys
 from pathlib import Path
+
+# Correctif : relecture des modèles HistGradientBoosting (module Cython "_loss")
+try:
+    import sklearn._loss._loss as _cy_loss
+    sys.modules.setdefault("_loss", _cy_loss)
+except Exception:
+    pass
 
 import joblib
 import numpy as np
@@ -26,6 +34,7 @@ st.set_page_config(page_title="SmartFactory AI", page_icon="🏭", layout="wide"
 
 BASE = Path(__file__).resolve().parent
 DATA, MODELS, FIG = BASE / "data", BASE / "models", BASE / "figures"
+REPORT = BASE / "report"
 
 COLORS = {"Normal": "#4C78A8", "Panne": "#E45756"}
 RAW_COLS = ["Type", "Air_temperature", "Process_temperature", "Rotational_speed", "Torque", "Tool_wear"]
@@ -143,7 +152,7 @@ def compute(df):
 # --------------------------------------------------------------------------------------
 st.sidebar.title("🏭 SmartFactory AI")
 page = st.sidebar.radio("Navigation", ["Accueil", "Capteurs", "PCA", "K-Means", "Modèles",
-                                       "Prédiction", "Interprétation"])
+                                       "Prédiction", "Interprétation", "Rapport LaTeX"])
 
 st.sidebar.divider()
 uploaded = st.sidebar.file_uploader("Charger les données d'une machine (CSV)", type="csv",
@@ -270,12 +279,17 @@ elif page == "PCA":
     cum = np.cumsum(var)
 
     st.markdown("**Variance expliquée**")
-    fig = go.Figure()
-    fig.add_bar(x=pc_cols, y=var, name="Par composante")
-    fig.add_scatter(x=pc_cols, y=cum, name="Cumulée", mode="lines+markers", yaxis="y2")
-    fig.update_layout(yaxis_title="Variance (%)", yaxis2=dict(overlaying="y", side="right",
-                      title="Cumulée (%)", range=[0, 105]), legend=dict(orientation="h"))
-    show(fig)
+    v1, v2 = st.columns(2)
+    with v1:
+        fig = px.bar(x=pc_cols, y=var, title="Par composante (scree plot)",
+                     labels={"x": "Composante", "y": "Variance expliquée (%)"})
+        show(fig)
+    with v2:
+        fig = px.line(x=pc_cols, y=cum, markers=True, title="Variance cumulée",
+                      labels={"x": "Nombre de composantes", "y": "Variance cumulée (%)"})
+        fig.add_hline(y=95, line_dash="dash", line_color="red", annotation_text="95 %")
+        fig.update_yaxes(range=[0, 105])
+        show(fig)
     st.caption(f"{len(pc_cols)} composantes conservent {cum[-1]:.1f} % de l'information.")
 
     st.markdown("**Projection des machines**")
