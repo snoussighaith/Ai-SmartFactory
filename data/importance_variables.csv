@@ -1,0 +1,10 @@
+,MDI,Permutation (baisse PR-AUC),Rang MDI,Rang permutation,Groupe
+Rotational_speed,0.2410801210483192,0.4701935435418262,1,1,"Mécanique (Torque, Power, Vitesse)"
+Torque,0.18598585764808748,0.05810123177869649,2,6,"Mécanique (Torque, Power, Vitesse)"
+Power,0.18321710912622105,0.13844917114532904,3,4,"Mécanique (Torque, Power, Vitesse)"
+Tool_wear,0.16003129915310912,0.06156555687745626,4,5,"Usure (Tool_wear, Torque_x_Wear)"
+Torque_x_Wear,0.09360677654301651,0.1641511496611931,5,3,"Usure (Tool_wear, Torque_x_Wear)"
+Temp_diff,0.08432059965914103,0.29949316939699105,6,2,"Thermique (Air, Process, Temp_diff)"
+Air_temperature,0.027237949550475496,-0.0020832718129256966,7,8,"Thermique (Air, Process, Temp_diff)"
+Process_temperature,0.019956144886803587,-0.011617645082172256,8,9,"Thermique (Air, Process, Temp_diff)"
+Type_enc,0.004564142384826593,0.04078978109009758,9,7,Type de produit
