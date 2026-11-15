@@ -1,0 +1,7 @@
+,"Seuil 0,5",Seuil ajusté (0.50)
+Accuracy,0.991,0.991
+Precision,0.903,0.903
+Recall,0.824,0.824
+F1,0.862,0.862
+ROC-AUC,0.975,0.975
+PR-AUC,0.882,0.882

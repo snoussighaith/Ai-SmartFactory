@@ -1,0 +1,6 @@
+Mode,Pannes (test),Détectées,Ratées,Recall (%)
+TWF,10,1,9,10.0
+HDF,29,28,1,96.6
+PWF,13,13,0,100.0
+OSF,16,16,0,100.0
+RNF,4,0,4,0.0

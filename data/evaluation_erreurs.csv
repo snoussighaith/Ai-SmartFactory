@@ -1,0 +1,8 @@
+Modèle,VP,FN (pannes ratées),FP (fausses alertes),VN
+Logistic Regression,60,8,277,1655
+KNN,22,46,3,1929
+SVM,63,5,145,1787
+Decision Tree,56,12,88,1844
+Random Forest,51,17,2,1930
+Gradient Boosting,57,11,10,1922
+RF optimisé (seuil ajusté),56,12,6,1926
