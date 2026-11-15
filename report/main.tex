@@ -195,6 +195,7 @@ Gradient Boosting (Hist) & Arbres successifs corrigeant les erreurs & \texttt{cl
 \caption{Algorithmes de classification comparés.}
 \end{table}
 
+
 Chaque modèle est évalué de deux façons : par \textbf{validation croisée stratifiée à 5 plis} sur l'apprentissage, puis par un entraînement complet suivi d'une évaluation sur le \textbf{test} jamais vu. Chacun est entraîné avec les variables originales (9 variables) et avec les composantes principales.
 
 \subsection{Métriques d'évaluation}
@@ -203,6 +204,7 @@ Tout part de la matrice de confusion (VP, FP, FN, VN), la classe « panne » ét
 \begin{itemize}[noitemsep]
   \item \textbf{Accuracy} $= \dfrac{VP + VN}{VP + VN + FP + FN}$. Trompeuse ici : un modèle qui prédit toujours « pas de panne » obtient environ 96,6\,\%.
   \item \textbf{Precision} $= \dfrac{VP}{VP + FP}$ : part des alertes qui sont justifiées.
+  
   \item \textbf{Recall} $= \dfrac{VP}{VP + FN}$ : part des vraies pannes détectées. C'est la métrique la plus critique en maintenance, car une panne ratée coûte plus cher qu'une fausse alerte.
   \item \textbf{F1-score} $= \dfrac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision} + \text{Recall}}$.
   \item \textbf{ROC-AUC} : capacité à classer une machine en panne au-dessus d'une machine saine, tous seuils confondus.

@@ -1,0 +1,46 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Contexte}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Problématique}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Objectifs}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Organisation du rapport}{3}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Présentation des données}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Source}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Description des variables}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Déséquilibre des classes}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Écart avec l'énoncé}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Méthodologie}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Prétraitement}{5}{subsection.3.1}%
+\contentsline {paragraph}{Qualité des données.}{5}{section*.2}%
+\contentsline {paragraph}{Valeurs aberrantes.}{5}{section*.3}%
+\contentsline {paragraph}{Fuite de données (\emph {data leakage}).}{5}{section*.4}%
+\contentsline {paragraph}{Encodage.}{5}{section*.5}%
+\contentsline {paragraph}{Séparation et normalisation.}{5}{section*.6}%
+\contentsline {subsection}{\numberline {3.2}Feature engineering}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Analyse exploratoire}{6}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Réduction de dimension : PCA}{6}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Apprentissage non supervisé : K-Means}{6}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Classification supervisée}{7}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Métriques d'évaluation}{7}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Optimisation et seuil de décision}{8}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Interprétation}{8}{subsection.3.9}%
+\contentsline {section}{\numberline {4}Résultats}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Analyse exploratoire}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}PCA}{8}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}K-Means}{9}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Classification : variables originales}{9}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Classification : composantes PCA}{10}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Comparaison variables originales et PCA}{10}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Optimisation et seuil de décision}{10}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Importance des variables}{10}{subsection.4.8}%
+\contentsline {section}{\numberline {5}Discussion}{10}{section.5}%
+\contentsline {paragraph}{Apport des variables construites.}{10}{section*.7}%
+\contentsline {paragraph}{Modèles à arbres.}{11}{section*.8}%
+\contentsline {paragraph}{Rôle de la PCA et de K-Means.}{11}{section*.9}%
+\contentsline {paragraph}{Compromis precision/recall.}{11}{section*.10}%
+\contentsline {section}{\numberline {6}Application interactive}{11}{section.6}%
+\contentsline {section}{\numberline {7}Limites et perspectives}{11}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Limites}{11}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Perspectives}{11}{subsection.7.2}%
+\contentsline {section}{Conclusion}{12}{section*.11}%
+\contentsline {section}{\numberline {A}Structure du projet}{12}{appendix.A}%
