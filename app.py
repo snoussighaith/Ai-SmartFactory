@@ -30,11 +30,14 @@ from sklearn.metrics import (accuracy_score, average_precision_score, confusion_
 
 warnings.filterwarnings("ignore")
 
-st.set_page_config(page_title="SmartFactory AI", page_icon="🏭", layout="wide")
+st.set_page_config(
+    page_title="SmartFactory AI",
+    page_icon=":material/factory:",
+    layout="wide",
+)
 
 BASE = Path(__file__).resolve().parent
 DATA, MODELS, FIG = BASE / "data", BASE / "models", BASE / "figures"
-REPORT = BASE / "report"
 
 COLORS = {"Normal": "#4C78A8", "Panne": "#E45756"}
 RAW_COLS = ["Type", "Air_temperature", "Process_temperature", "Rotational_speed", "Torque", "Tool_wear"]
@@ -150,15 +153,25 @@ def compute(df):
 # --------------------------------------------------------------------------------------
 # Barre latérale : navigation et chargement des données
 # --------------------------------------------------------------------------------------
-st.sidebar.title("🏭 SmartFactory AI")
-page = st.sidebar.radio("Navigation", ["Accueil", "Capteurs", "PCA", "K-Means", "Modèles",
-                                       "Prédiction", "Interprétation", "Rapport LaTeX"])
+with st.sidebar.container(border=True):
+    st.title("SmartFactory AI", icon=":material/factory:")
+    st.caption("Maintenance prédictive · AI4I 2020")
+    page = st.radio(
+        "Navigation",
+        ["Accueil", "Capteurs", "PCA", "K-Means", "Modèles", "Prédiction", "Interprétation"],
+    )
 
-st.sidebar.divider()
-uploaded = st.sidebar.file_uploader("Charger les données d'une machine (CSV)", type="csv",
-                                    help="Format AI4I 2020 : colonnes Type, Air temperature [K], "
-                                         "Process temperature [K], Rotational speed [rpm], "
-                                         "Torque [Nm], Tool wear [min]. Machine failure est facultative.")
+st.sidebar.space("small")
+with st.sidebar.container(border=True):
+    st.subheader("Données actives", divider="blue")
+    uploaded = st.file_uploader(
+        "Importer un fichier CSV",
+        type="csv",
+        help="Colonnes attendues : Type, Air temperature [K], Process temperature [K], "
+             "Rotational speed [rpm], Torque [Nm] et Tool wear [min].",
+    )
+    st.caption("Le fichier doit contenir les mesures des capteurs. "
+               "La colonne Machine failure est facultative.")
 
 df, source = tab["clean"], "jeu de données AI4I 2020 (10 000 machines)"
 if uploaded is not None:
@@ -178,46 +191,44 @@ has_target = "Machine_failure" in df.columns
 if has_target:
     df = df.assign(État=np.where(df["Machine_failure"] == 1, "Panne", "Normal"))
 Z, labels, dist = compute(df)
-st.sidebar.caption(f"Données actives : {source}")
+st.sidebar.caption(f":material/database: **Source active**  \n{source}")
 
 
 # --------------------------------------------------------------------------------------
 # Page Accueil
 # --------------------------------------------------------------------------------------
 if page == "Accueil":
-    st.title("SmartFactory AI")
+    st.title("SmartFactory AI", icon=":material/factory:")
     st.subheader("Détection d'anomalies et prédiction des pannes industrielles")
-    st.write("Prototype de maintenance prédictive : exploration des capteurs, réduction de "
-             "dimension (PCA), groupes de comportements (K-Means), classification de l'état de "
-             "la machine et interprétation des facteurs de panne.")
+    st.caption("Un espace unique pour explorer les capteurs, évaluer les modèles et simuler une alerte.")
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Machines", f"{len(df):,}".replace(",", " "))
+    c1, c2, c3, c4 = st.columns(4, gap="medium")
+    c1.metric("Machines analysées", f"{len(df):,}".replace(",", " "))
     if has_target:
-        c2.metric("Pannes", int(df["Machine_failure"].sum()))
+        c2.metric("Pannes détectées", int(df["Machine_failure"].sum()))
         c3.metric("Taux de pannes", f"{df['Machine_failure'].mean() * 100:.2f} %")
     else:
-        c2.metric("Pannes", "n/a")
+        c2.metric("Pannes détectées", "n/a")
         c3.metric("Taux de pannes", "n/a")
-    c4.metric("Variables d'entrée", len(feature_cols))
+    c4.metric("Variables utilisées", len(feature_cols))
 
     left, right = st.columns([3, 2])
     with left:
-        st.markdown("**Aperçu des données**")
+        st.subheader("Aperçu des données")
         show_df(df.drop(columns=["État"], errors="ignore").head(20))
     with right:
         if has_target:
-            st.markdown("**Répartition de l'état des machines**")
+            st.subheader("État des machines")
             counts = df["État"].value_counts().reset_index()
             counts.columns = ["État", "Nombre"]
             show(px.pie(counts, names="État", values="Nombre", color="État",
                         color_discrete_map=COLORS, hole=0.5))
-            st.caption("Les pannes sont rares : l'accuracy serait trompeuse. Les modèles sont "
-                       "jugés sur le Recall, le F1-score et la PR-AUC.")
+            st.caption("Les modèles sont comparés avec le recall, le F1-score et la PR-AUC, "
+                       "plus adaptés aux pannes rares.")
         else:
-            st.info("Le fichier chargé ne contient pas la colonne Machine failure.")
+            st.info("Le fichier chargé ne contient pas la colonne « Machine failure ».")
 
-    with st.expander("Pipeline et limites"):
+    with st.expander("Comprendre le pipeline", icon=":material/account_tree:"):
         st.markdown(
             "1. **Prétraitement** : nettoyage, outliers conservés, 3 variables construites "
             "(`Temp_diff`, `Power`, `Torque_x_Wear`), split stratifié, normalisation.\n"
