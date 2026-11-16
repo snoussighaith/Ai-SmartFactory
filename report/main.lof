@@ -1,0 +1,10 @@
+\babel@toc {french}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Matrices de confusion des modèles évalués sur le test.}}{14}{figure.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Variance expliquée individuellement et cumulée par la PCA.}}{15}{figure.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Loadings des variables sur les composantes principales.}}{15}{figure.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Projection des clusters K-Means et de leurs centroïdes.}}{16}{figure.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Effet de la PCA sur les performances des modèles.}}{18}{figure.5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Courbes ROC et Precision--Recall sur le jeu de test.}}{18}{figure.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Importance des variables par permutation.}}{19}{figure.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Recall du modèle optimisé selon le mode de panne.}}{20}{figure.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Évaluation finale du Random Forest optimisé.}}{22}{figure.9}%

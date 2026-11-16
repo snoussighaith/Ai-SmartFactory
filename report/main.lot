@@ -1,0 +1,9 @@
+\babel@toc {french}{}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces Variables du jeu de données AI4I 2020.}}{9}{table.1}%
+\contentsline {table}{\numberline {2}{\ignorespaces Variables construites par feature engineering.}}{11}{table.2}%
+\contentsline {table}{\numberline {3}{\ignorespaces Algorithmes de classification comparés.}}{12}{table.3}%
+\contentsline {table}{\numberline {4}{\ignorespaces Variance expliquée par les composantes principales.}}{14}{table.4}%
+\contentsline {table}{\numberline {5}{\ignorespaces Clusters K-Means et taux de pannes.}}{15}{table.5}%
+\contentsline {table}{\numberline {6}{\ignorespaces Performance du détecteur d'anomalies par distance au centroïde (test).}}{16}{table.6}%
+\contentsline {table}{\numberline {7}{\ignorespaces Performances sur le test, variables originales.}}{17}{table.7}%
+\contentsline {table}{\numberline {8}{\ignorespaces Effet de l'ajustement du seuil de décision.}}{18}{table.8}%
