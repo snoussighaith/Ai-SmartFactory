@@ -35,22 +35,31 @@
 % ---------- Page de titre ----------
 \begin{titlepage}
 \centering
-\vspace*{1.5cm}
-{\large Master 2 Data Science\par}
-{\large Matière : Analyse Python\par}
-\vspace{2.5cm}
+\vspace*{0.6cm}
+{\includegraphics[width=0.34\textwidth]{logo-isima.png}\par}
+\vspace{0.8cm}
+{\large\bfseries Institut Supérieur d'Informatique de Mahdia\par}
+\vspace{0.3cm}
+{\large Master 2 Data Science -- Groupe A\par}
+\vspace{1.8cm}
+{\color{blue!60!black}\rule{\textwidth}{1.2pt}\par}
+\vspace{0.45cm}
+{\Large\bfseries Projet de Data Science\par}
+\vspace{0.8cm}
 {\Huge\bfseries SmartFactory AI\par}
 \vspace{0.6cm}
 {\Large Système intelligent de détection d'anomalies\\
 et de prédiction des pannes industrielles\par}
-\vspace{3cm}
+\vspace{1.8cm}
 \begin{tabular}{rl}
-\textbf{Réalisé par :} & Ghita Snoussi \\
-\textbf{Encadrant :} & Non renseigné \\
+\textbf{Réalisé par :} & Snoussi Ghaith \\
+\textbf{Enseignante :} & Mme Sirine Marakchi \\
+\textbf{Niveau :} & 2\textsuperscript{e} année Master Data Science \\
+\textbf{Groupe :} & A \\
 \textbf{Année universitaire :} & 2026--2027 \\
 \end{tabular}
 \vfill
-{\large \today\par}
+{\large Année universitaire 2026--2027\par}
 \end{titlepage}
 
 % ---------- Remerciements ----------
@@ -473,6 +482,15 @@ prétraitement du fichier importé reprend l'encodage du type et les trois varia
 dérivées ; le scaler, la PCA et K-Means sauvegardés sont ensuite réutilisés pour
 garantir la cohérence avec l'entraînement. Les fonctions de chargement utilisent
 \texttt{st.cache\_data} et \texttt{st.cache\_resource}.
+
+\subsection{Déploiement en ligne}
+L'application est déployée sur Streamlit Community Cloud et peut être
+consultée à l'adresse suivante :
+\begin{center}
+\url{https://ai-smart-factory.streamlit.app/}
+\end{center}
+Cette version en ligne permet d'explorer les données, les visualisations et
+les prédictions directement depuis un navigateur.
 
 \subsection{Navigation et fonctionnalités}
 La navigation comporte sept pages : Accueil, Capteurs, PCA, K-Means, Modèles,
